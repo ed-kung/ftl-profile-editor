@@ -50,11 +50,22 @@ export function GameDataLoader({ onLoaded }: GameDataLoaderProps) {
 
   return (
     <div className="loader">
-      <h2>Select your FTL game data</h2>
+      <h2>General Instructions</h2>
+      <ol className="instructions-list">
+        <li>
+          Upload game data file (<code>ftl.dat</code>)
+        </li>
+        <li>
+          Upload profile file (<code>ae_prof.sav</code> or <code>prof.sav</code>)
+        </li>
+        <li>
+          Edit the profile and download the modified profile. Replace the original profile file with modified file. (Don't forget to back up the original!)
+        </li>
+      </ol>
+
+      <h2>Upload ftl.dat</h2>
       <p>
-        The editor needs the game's own achievement and ship lists, which live
-        inside <code>ftl.dat</code>. You only have to do this once — the small
-        part that gets used is kept in this browser afterwards.
+        First, you need to upload your <code>ftl.dat</code> file. You should only have to do this once on this browser.
       </p>
 
       {error && (
@@ -74,32 +85,23 @@ export function GameDataLoader({ onLoaded }: GameDataLoaderProps) {
 
       {stage && <p className="spinner">{stage}…</p>}
 
+      <h3>Default file locations:</h3>
       <ul className="hint-list">
         <li>
           macOS:{' '}
           <code>
             /Applications/FTL Advanced Edition.app/Contents/Resources/ftl.dat
           </code>
-          <br />
-          macOS hides the inside of <code>.app</code> bundles from the file
-          picker. Either right-click the app in Finder, choose{' '}
-          <strong>Show Package Contents</strong>, and drag{' '}
-          <code>ftl.dat</code> here from{' '}
-          <code>Contents/Resources</code> — or press{' '}
-          <strong>Cmd&nbsp;+&nbsp;Shift&nbsp;+&nbsp;G</strong> in the file
-          dialog and paste the path above.
         </li>
         <li>
           Windows:{' '}
-          <code>C:\Program Files (x86)\FTL\resources\ftl.dat</code>{' '}
-          (Steam: <code>steamapps\common\FTL Faster Than Light\data\resources</code>)
+          <code>C:\Program Files (x86)\FTL\resources\ftl.dat</code>
+        </li>
+        <li>
+          Steam: <code>steamapps\common\FTL Faster Than Light\data\resources\ftl.dat</code>
         </li>
         <li>
           Linux: <code>FTL/data/resources/ftl.dat</code>
-        </li>
-        <li>
-          Only the 278&nbsp;MB archive's index is read, not the whole file, so
-          this takes about a second.
         </li>
       </ul>
     </div>

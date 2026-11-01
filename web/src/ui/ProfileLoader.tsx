@@ -22,10 +22,23 @@ export function ProfileLoader({ onFile, error }: ProfileLoaderProps) {
 
   return (
     <div className="loader">
-      <h2>Open your profile</h2>
+      <h2>General Instructions</h2>
+      <ol className="instructions-list">
+        <li>
+          Upload game data file (<code>ftl.dat</code>)
+        </li>
+        <li>
+          Upload profile file (<code>ae_prof.sav</code> or <code>prof.sav</code>)
+        </li>
+        <li>
+          Edit the profile and download the modified profile. Replace the original profile file with modified file. (Don't forget to back up the original!)
+        </li>
+      </ol>
+
+      <h2>Upload ae_prof.sav or prof.sav</h2>
       <p>
-        Quit FTL before editing, and keep a copy of the original — the editor
-        offers you one as soon as the file opens.
+        Upload the profile file to edit. Advanced Edition uses <code>ae_prof.sav</code>, older versions use <code>prof.sav</code>.
+        Quit FTL before uploading, and make a backup of the original file.
       </p>
 
       {error && (
@@ -43,6 +56,7 @@ export function ProfileLoader({ onFile, error }: ProfileLoaderProps) {
         onFile={load}
       />
 
+      <h3>Default file locations:</h3>
       <ul className="hint-list">
         <li>
           macOS:{' '}
@@ -54,10 +68,6 @@ export function ProfileLoader({ onFile, error }: ProfileLoaderProps) {
         </li>
         <li>
           Linux: <code>~/.local/share/FasterThanLight/ae_prof.sav</code>
-        </li>
-        <li>
-          Looking for <code>continue.sav</code>? Saved-game editing isn't
-          supported here yet — use the desktop app for that.
         </li>
       </ul>
     </div>
