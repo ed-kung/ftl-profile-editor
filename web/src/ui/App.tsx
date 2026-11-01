@@ -86,6 +86,7 @@ export function App() {
             setCachePersisted(cached)
           }}
         />
+        <Credits />
       </div>
     )
   }
@@ -136,6 +137,7 @@ export function App() {
           }}
         />
         <ProfileLoader onFile={openProfileFile} error={profileError} />
+        <Credits />
       </div>
     )
   }
@@ -404,4 +406,23 @@ function download(bytes: Uint8Array, fileName: string): void {
 
   // Give the browser a moment to start the download before dropping the blob.
   setTimeout(() => URL.revokeObjectURL(url), 10_000)
+}
+
+function Credits() {
+  return (
+    <footer className="credits">
+      <p>
+        Browser based version of{' '}
+        <a href="https://github.com/Vhati/ftl-profile-editor" target="_blank" rel="noreferrer">
+          Vhati&rsquo;s FTL Profile Editor
+        </a>
+        .
+      </p>
+      <p>
+        <a href="https://github.com/ed-kung/ftl-profile-editor" target="_blank" rel="noreferrer">
+          Source for this project on GitHub
+        </a>
+      </p>
+    </footer>
+  )
 }

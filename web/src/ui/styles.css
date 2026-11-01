@@ -443,6 +443,26 @@ pre.dump {
   font-size: 12px;
 }
 
+/* ---------- credits footer (upload screens) ---------- */
+
+.credits {
+  max-width: 680px;
+  margin: 48px auto 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.credits p {
+  margin: 4px 0;
+}
+
+.credits a {
+  color: var(--accent);
+}
+
 /* ---------- file drop zones ---------- */
 
 .loader {
