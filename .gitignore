@@ -20,3 +20,12 @@ Desktop.ini
 # IdeaJ
 *.idea
 *.iml
+
+# Web app (Node)
+web/node_modules/
+web/dist/
+web/*.tsbuildinfo
+
+# Test fixtures contain game data and personal saves; regenerate locally.
+web/test/fixtures/*
+!web/test/fixtures/README.md
