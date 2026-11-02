@@ -528,3 +528,127 @@ pre.dump {
   overflow: hidden;
   clip: rect(0 0 0 0);
 }
+
+/* ---------- saved game ---------- */
+
+.mode-switch {
+  margin-bottom: 0;
+}
+
+.field-gap {
+  margin-top: 12px;
+}
+
+.field-label {
+  color: var(--text-dim);
+}
+
+.dim-cell {
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.check-label {
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.add-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.item-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.item-row select {
+  flex: 1 1 200px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+details.panel > summary,
+.crew-member > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.crew-member {
+  border-bottom: 1px solid var(--border);
+  padding: 8px 0;
+}
+
+.crew-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 10px 0;
+}
+
+.sector-tree {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.sector-column {
+  display: flex;
+  flex: 1 0 110px;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 110px;
+}
+
+.sector-column-title {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.sector-dot {
+  padding: 6px;
+  font-size: 12px;
+  border-left-width: 3px;
+  overflow-wrap: anywhere;
+}
+
+.sector-dot:disabled {
+  opacity: 1;
+  color: var(--text-dim);
+  cursor: default;
+}
+
+.sector-dot.sector-CIVILIAN {
+  border-left-color: var(--easy);
+}
+
+.sector-dot.sector-NEBULA {
+  border-left-color: var(--normal);
+}
+
+.sector-dot.sector-HOSTILE {
+  border-left-color: var(--hard);
+}
+
+.sector-dot.is-visited:disabled {
+  background: var(--accent-dim);
+  color: var(--text);
+}
+
+.sector-dot.is-next {
+  border-style: dashed;
+  border-color: var(--accent);
+}
+
+.sector-rollback {
+  padding: 3px 6px;
+  font-size: 11px;
+}

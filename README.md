@@ -18,10 +18,11 @@ Status
 
 To download compiled binaries, [click here](https://sourceforge.net/projects/ftleditor/).
 
-There is also a **browser version for editing profiles**, with nothing to install:
-**<https://ed-kung.github.io/ftl-profile-editor/>**. It covers ship unlocks, achievements and
-stats; saved games still need the desktop application. Source and notes are in [`web/`](web/).
-The Java application is unchanged by it.
+There is also a **browser version for editing profiles and saved games**, with nothing to install:
+**<https://ed-kung.github.io/ftl-profile-editor/>**. For profiles it covers ship unlocks,
+achievements and stats. For saved games it covers supplies, crew, systems, equipment and the sector
+route; the ship floorplan, sector map, stores and changing ship still need the desktop application.
+Source and notes are in [`web/`](web/). The Java application is unchanged by it.
 
 Comments can be made in a forum thread [here](https://subsetgames.com/forum/viewtopic.php?f=7&t=10959).
 

@@ -56,16 +56,17 @@ export function GameDataLoader({ onLoaded }: GameDataLoaderProps) {
           Upload game data file (<code>ftl.dat</code>)
         </li>
         <li>
-          Upload profile file (<code>ae_prof.sav</code> or <code>prof.sav</code>)
+          Upload a profile (<code>ae_prof.sav</code> or <code>prof.sav</code>) or a saved game (<code>continue.sav</code>)
         </li>
         <li>
-          Edit the profile and download the modified profile. Replace the original profile file with modified file. (Don't forget to back up the original!)
+          Edit it and download the modified file. Replace the original with the modified file. (Don't forget to back up the original!)
         </li>
       </ol>
 
       <h2>Upload ftl.dat</h2>
       <p>
         First, you need to upload your <code>ftl.dat</code> file. You should only have to do this once on this browser.
+        If you have done it before, the editor has since started using more of the game's data, so it needs the file one more time.
       </p>
 
       {error && (

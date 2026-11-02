@@ -1,4 +1,4 @@
-import type { DataPack } from './datapack'
+import { DATA_PACK_SCHEMA, type DataPack } from './datapack'
 
 /**
  * Persists the extracted data pack in IndexedDB.
@@ -47,7 +47,9 @@ export async function loadCachedDataPack(): Promise<DataPack | null> {
       const pack = await promisify<DataPack | undefined>(
         tx.objectStore(STORE).get(KEY),
       )
-      return pack ?? null
+      // A pack from an older build lacks what this one expects, so it counts
+      // as no pack and the user picks "ftl.dat" again.
+      return pack?.schemaVersion === DATA_PACK_SCHEMA ? pack : null
     } finally {
       db.close()
     }

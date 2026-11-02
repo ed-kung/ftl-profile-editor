@@ -10,6 +10,14 @@ export interface ShipBlueprint {
   name: string | null
   shipClass: string | null
   description: string | null
+  /**
+   * The rooms each system can occupy, by system id (e.g. "pilot").
+   *
+   * A system without an entry has no room on this ship, so can't be installed.
+   * Artillery is the one system that can fill several rooms, as on the rebel
+   * flagship; each room adds a system record to a saved game.
+   */
+  systemRooms: Record<string, number[]>
 }
 
 /** Blueprint files that are always in effect, in load order. */
@@ -67,6 +75,15 @@ export function addShipBlueprints(
     const id = el.getAttribute('name')
     if (!id) continue
 
+    const systemRooms: Record<string, number[]> = {}
+    const systemList = childElement(el, 'systemList')
+    for (const systemEl of systemList ? Array.from(systemList.children) : []) {
+      const room = Number(systemEl.getAttribute('room'))
+      if (!Number.isInteger(room)) continue
+
+      ;(systemRooms[systemEl.tagName] ??= []).push(room)
+    }
+
     into.set(id, {
       id,
       layoutId: el.getAttribute('layout'),
@@ -74,6 +91,7 @@ export function addShipBlueprints(
       name: resolveText(childElement(el, 'name'), lookup),
       shipClass: resolveText(childElement(el, 'class'), lookup),
       description: resolveText(childElement(el, 'desc'), lookup),
+      systemRooms,
     })
   }
 }

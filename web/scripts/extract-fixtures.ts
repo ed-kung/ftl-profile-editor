@@ -28,6 +28,7 @@ import {
 const WANTED = [
   ...TEXT_LOOKUP_FILE_NAMES,
   'achievements.xml',
+  'sector_data.xml',
   ...STD_BLUEPRINT_FILE_NAMES,
   ...DLC_BLUEPRINT_FILE_NAMES,
 ]
@@ -60,6 +61,30 @@ async function main() {
     written++
   }
 
+  // Every ship layout a blueprint names, for parsing saved games.
+  const blueprintText = (
+    await Promise.all(
+      [...STD_BLUEPRINT_FILE_NAMES, ...DLC_BLUEPRINT_FILE_NAMES]
+        .map((name) => `data/${name}`)
+        .filter((p) => pack.has(p))
+        .map((p) => pack.getText(p)),
+    )
+  ).join('\n')
+
+  const layoutIds = new Set<string>()
+  for (const tag of blueprintText.matchAll(/<shipBlueprint[^>]*>/g)) {
+    const layoutId = tag[0].match(/layout="([^"]+)"/)?.[1]
+    if (layoutId) layoutIds.add(layoutId)
+  }
+
+  for (const layoutId of layoutIds) {
+    const innerPath = `data/${layoutId}.txt`
+    if (!pack.has(innerPath)) continue
+
+    await writeFile(join(outDir, `${layoutId}.txt`), await pack.getBytes(innerPath))
+    written++
+  }
+
   // The icons too, so the browser harness has something real to render and
   // to put through the downscaler.
   const iconDir = join(outDir, '../img')
@@ -69,18 +94,9 @@ async function main() {
     if (innerPath.startsWith('img/achievements/')) iconPaths.add(innerPath)
   }
 
-  const blueprints = (
-    await Promise.all(
-      [...STD_BLUEPRINT_FILE_NAMES, ...DLC_BLUEPRINT_FILE_NAMES]
-        .map((name) => `data/${name}`)
-        .filter((p) => pack.has(p))
-        .map((p) => pack.getText(p)),
-    )
-  ).join('\n')
-
   for (const baseId of DLC_PLAYER_SHIP_BASE_IDS) {
     for (const variantId of [baseId, `${baseId}_2`, `${baseId}_3`]) {
-      const match = blueprints.match(
+      const match = blueprintText.match(
         new RegExp(`<shipBlueprint[^>]*name="${variantId}"[^>]*>`),
       )
       const gfx = match?.[0].match(/img="([^"]+)"/)?.[1]
