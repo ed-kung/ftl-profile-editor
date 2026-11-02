@@ -22,18 +22,10 @@ export function ProfileLoader({ onFile, error }: ProfileLoaderProps) {
 
   return (
     <div className="loader">
-      <h2>General Instructions</h2>
-      <ol className="instructions-list">
-        <li>
-          Upload game data file (<code>ftl.dat</code>)
-        </li>
-        <li>
-          Upload profile file (<code>ae_prof.sav</code> or <code>prof.sav</code>)
-        </li>
-        <li>
-          Edit the profile and download the modified profile. Replace the original profile file with modified file. (Don't forget to back up the original!)
-        </li>
-      </ol>
+      <p>
+        For the saved game of a run in progress (<code>continue.sav</code>), use
+        the Saved Game tab above.
+      </p>
 
       <h2>Upload ae_prof.sav or prof.sav</h2>
       <p>

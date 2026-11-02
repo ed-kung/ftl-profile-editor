@@ -1,8 +1,8 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import type { DataPack } from '../src/lib/datapack'
+import { DATA_PACK_SCHEMA, type DataPack } from '../src/lib/datapack'
 
 const FIXTURE_DIR = join(dirname(fileURLToPath(import.meta.url)), 'fixtures')
 const DATA_DIR = join(FIXTURE_DIR, 'data')
@@ -18,6 +18,7 @@ const DATA_FILE_NAMES = [
   'text_tooltips.xml',
   'text_tutorial.xml',
   'achievements.xml',
+  'sector_data.xml',
   'blueprints.xml',
   'autoBlueprints.xml',
   'bosses.xml',
@@ -51,7 +52,17 @@ export function loadDataPackFixture(): DataPack {
     }
   }
 
+  const layouts: Record<string, string> = {}
+  if (existsSync(DATA_DIR)) {
+    for (const name of readdirSync(DATA_DIR)) {
+      if (name.endsWith('.txt')) {
+        layouts[name.slice(0, -4)] = readFileSync(join(DATA_DIR, name), 'utf8')
+      }
+    }
+  }
+
   return {
+    schemaVersion: DATA_PACK_SCHEMA,
     source: {
       fileName: 'ftl.dat',
       fileSize: 0,
@@ -59,8 +70,20 @@ export function loadDataPackFixture(): DataPack {
       extractedAt: 0,
     },
     xml,
+    layouts,
     icons: {},
   }
+}
+
+/** Saved games in test/fixtures, by file name. Any "*.sav" but the profiles. */
+export function listSaveFixtures(): string[] {
+  return readdirSync(FIXTURE_DIR).filter(
+    (name) => name.endsWith('.sav') && !/prof\.sav$/.test(name),
+  )
+}
+
+export function loadFixture(name: string): Uint8Array {
+  return new Uint8Array(readFileSync(join(FIXTURE_DIR, name)))
 }
 
 export function loadProfileFixture(): Uint8Array {

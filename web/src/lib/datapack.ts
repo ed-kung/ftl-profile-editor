@@ -1,6 +1,7 @@
 import type { Pack } from './dat/PackContainer'
 import { toBlob } from './io/blob'
 import { parseAchievements } from './data/achievements'
+import { SECTOR_DATA_FILE_NAME } from './data/sectors'
 import {
   DLC_BLUEPRINT_FILE_NAMES,
   DLC_PLAYER_SHIP_BASE_IDS,
@@ -15,17 +16,21 @@ import {
 } from './data/textLookup'
 
 /**
- * The slice of an FTL install the profile editor actually needs.
+ * The slice of an FTL install the editors actually need.
  *
- * "ftl.dat" is 278MB, of which this is well under a megabyte once the icons
+ * "ftl.dat" is 278MB, of which this is a few megabytes at most once the icons
  * have been downscaled. Extracting it once and caching the result means the
- * user picks their game directory a single time, ever.
+ * user picks their game directory a single time, per pack schema.
  */
 export interface DataPack {
+  /** A cached pack from another schema is ignored. @see DATA_PACK_SCHEMA */
+  readonly schemaVersion: number
   /** Identifies the install this came from, so a changed dat invalidates it. */
   readonly source: DataPackSource
   /** Inner path (without "data/") to file contents. */
   readonly xml: Record<string, string>
+  /** Layout id (e.g. "kestral") to the text of "data/<id>.txt". */
+  readonly layouts: Record<string, string>
   /** Inner path (e.g. "img/achievements/0.png") to a downscaled PNG. */
   readonly icons: Record<string, Blob>
 }
@@ -37,6 +42,14 @@ export interface DataPackSource {
   /** Set when the pack was built, for display. */
   extractedAt: number
 }
+
+/**
+ * Bump whenever the pack's contents change.
+ *
+ * 1 had no schema field at all. 2 added ship layouts and
+ * sector data for saved games.
+ */
+export const DATA_PACK_SCHEMA = 2
 
 /** Icons are stored at twice their display box, for HiDPI screens. */
 const ICON_MAX_EDGE = 128
@@ -68,6 +81,7 @@ export async function extractDataPack(
   for (const name of [
     ...TEXT_LOOKUP_FILE_NAMES,
     'achievements.xml',
+    SECTOR_DATA_FILE_NAME,
     ...BLUEPRINT_FILE_NAMES,
   ]) {
     const innerPath = `data/${name}`
@@ -86,8 +100,18 @@ export async function extractDataPack(
     )
   }
 
+  onProgress('Reading ship layouts')
+  const { ships, lookup } = parseShips(xml)
+  const layouts: Record<string, string> = {}
+  for (const ship of ships.values()) {
+    if (!ship.layoutId || layouts[ship.layoutId] !== undefined) continue
+
+    const innerPath = `data/${ship.layoutId}.txt`
+    if (pack.has(innerPath)) layouts[ship.layoutId] = await pack.getText(innerPath)
+  }
+
   onProgress('Finding icons')
-  const iconPaths = collectIconPaths(xml)
+  const iconPaths = collectIconPaths(xml, ships, lookup)
 
   const icons: Record<string, Blob> = {}
   let done = 0
@@ -104,28 +128,41 @@ export async function extractDataPack(
   }
 
   return {
+    schemaVersion: DATA_PACK_SCHEMA,
     source: { ...source, extractedAt: Date.now() },
     xml,
+    layouts,
     icons,
   }
 }
 
-/** Every icon the profile tabs will want to display. */
-function collectIconPaths(xml: Record<string, string>): string[] {
+function parseShips(xml: Record<string, string>): {
+  ships: Map<string, ShipBlueprint>
+  lookup: TextLookup
+} {
   const lookup: TextLookup = new Map()
   for (const name of TEXT_LOOKUP_FILE_NAMES) {
     if (xml[name]) addTextLookups(lookup, xml[name], name)
   }
 
+  const ships = new Map<string, ShipBlueprint>()
+  for (const name of BLUEPRINT_FILE_NAMES) {
+    if (xml[name]) addShipBlueprints(ships, xml[name], name, lookup)
+  }
+
+  return { ships, lookup }
+}
+
+/** Every icon the profile tabs will want to display. */
+function collectIconPaths(
+  xml: Record<string, string>,
+  ships: Map<string, ShipBlueprint>,
+  lookup: TextLookup,
+): string[] {
   const paths = new Set<string>()
 
   for (const ach of parseAchievements(xml['achievements.xml'], lookup).values()) {
     if (ach.imagePath) paths.add(`img/${ach.imagePath}`)
-  }
-
-  const ships = new Map<string, ShipBlueprint>()
-  for (const name of BLUEPRINT_FILE_NAMES) {
-    if (xml[name]) addShipBlueprints(ships, xml[name], name, lookup)
   }
 
   for (const baseId of DLC_PLAYER_SHIP_BASE_IDS) {

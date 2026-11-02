@@ -7,6 +7,6 @@ export default defineConfig({
   test: {
     // The game-data parsers use DOMParser, which jsdom provides.
     environment: 'jsdom',
-    include: ['test/**/*.test.ts'],
+    include: ['test/**/*.test.{ts,tsx}'],
   },
 })
